@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+memory.json
+.env
+bot_before_commands.py
+bot_v3_backup.py
+bot_with_commands.py
+bot_working_backup.py
+bot_backup.py
+bot_old_backup.py
+bot_v2_backup.py
+bot_v3_stable.py
+config.py
