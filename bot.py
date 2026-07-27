@@ -24,16 +24,18 @@ from commands import (
     about_command,
 )
 
-
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_message = update.message.text
+    user_message = update.message.text.strip()
+    text = user_message.lower()
     user_id = update.effective_user.id
 
     memory = load_memory()
     user = get_user(memory, user_id)
 
-    # Remember name
-    if user_message.lower().startswith("my name is "):
+    # ==========================
+    # Remember user's name
+    # ==========================
+    if text.startswith("my name is "):
         name = user_message[11:].strip()
 
         user["name"] = name
@@ -44,13 +46,99 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    # Remember facts
-    if user_message.lower().startswith("remember that "):
+    # ==========================
+    # Remember where user lives
+    # ==========================
+    if text.startswith("i live in "):
+        remember_fact(
+            memory,
+            user_id,
+            "location",
+            user_message[10:].strip()
+        )
+
+    # ==========================
+    # Remember origin
+    # ==========================
+    if text.startswith("i'm from "):
+        remember_fact(
+            memory,
+            user_id,
+            "origin",
+            user_message[9:].strip()
+        )
+
+    elif text.startswith("i am from "):
+        remember_fact(
+            memory,
+            user_id,
+            "origin",
+            user_message[10:].strip()
+        )
+
+    # ==========================
+    # Remember education
+    # ==========================
+    if (
+        "i study" in text
+        or "studying" in text
+        or "i'm studying" in text
+        or "i am studying" in text
+    ):
+        remember_fact(
+            memory,
+            user_id,
+            "education",
+            user_message
+        )
+
+    # ==========================
+    # Remember job
+    # ==========================
+    if (
+        "i work at" in text
+        or "i work with" in text
+        or "working with" in text
+        or "i'm working at" in text
+        or "i'm working with" in text
+    ):
+        remember_fact(
+            memory,
+            user_id,
+            "job",
+            user_message
+        )
+
+    # ==========================
+    # Remember favourite language
+    # ==========================
+    if (
+        "my favorite language is " in text
+        or "my favourite language is " in text
+        or "i prefer " in text
+    ):
+        if "my favorite language is " in text:
+            value = user_message[24:].strip()
+        elif "my favourite language is " in text:
+            value = user_message[25:].strip()
+        else:
+            value = user_message[9:].strip()
+
+        remember_fact(
+            memory,
+            user_id,
+            "preferred_language",
+            value
+        )
+
+    # ==========================
+    # Remember custom facts
+    # ==========================
+    if text.startswith("remember that "):
         fact = user_message[14:].strip()
 
         facts = user.get("facts", {})
-
-        fact_key = f"fact_{len(facts) + 1}"
+        fact_key = f"fact_{len(facts)+1}"
 
         remember_fact(
             memory,
@@ -64,7 +152,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    if user_message.lower() in [
+    # ==========================
+    # Recall user's name
+    # ==========================
+    if text in [
         "what is my name?",
         "what's my name?",
         "who am i?"
@@ -79,6 +170,45 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         return
 
+    if text in [
+        "what do you know about me?",
+        "what do you know about me",
+        "tell me about me",
+    ]:
+        facts = user.get("facts", {})
+
+        reply = "🧠 Here's what I know about you:\n\n"
+
+        if user.get("name"):
+            reply += f"👤 Name: {user['name']}\n"
+
+        if facts.get("location"):
+            reply += f"📍 Lives in: {facts['location']}\n"
+
+        if facts.get("origin"):
+            reply += f"🏠 From: {facts['origin']}\n"
+
+        if facts.get("education"):
+            reply += f"🎓 Education: {facts['education']}\n"
+
+        if facts.get("job"):
+            reply += f"💼 Job: {facts['job']}\n"
+
+        if facts.get("preferred_language"):
+            reply += (
+                f"🗣️ Preferred language: "
+                f"{facts['preferred_language']}\n"
+            )
+
+        if reply == "🧠 Here's what I know about you:\n\n":
+            reply += "I don't know much about you yet."
+
+        await update.message.reply_text(reply)
+        return
+
+    # ==========================
+    # Show typing indicator
+    # ==========================
     await update.message.chat.send_action(ChatAction.TYPING)
 
     try:

@@ -1,7 +1,7 @@
 import os
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+BOT_TOKEN = "8775990682:AAFeylGWbYUAgZ7RkYa9_ki0iCC2tO1fLTA"
+GEMINI_API_KEY = "AIzaSyCpURR61zolpzXZxqwXyXq_m_5Vjq3ga6c"
 
 SYSTEM_PROMPT = """
 You are Abdul AML, a smart, friendly and professional AI assistant.

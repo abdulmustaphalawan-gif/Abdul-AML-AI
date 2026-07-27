@@ -67,6 +67,8 @@ Answer naturally and remember the context.
         timeout=20
     )
 
+    print(response.status_code)
+    print(response.text)
     response.raise_for_status()
 
     result = response.json()
