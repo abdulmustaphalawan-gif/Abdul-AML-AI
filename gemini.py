@@ -1,7 +1,7 @@
 import requests
 from config import GEMINI_API_KEY, SYSTEM_PROMPT
 
-MODEL = "gemini-3.5-flash"
+MODEL = "gemini-3.5-flash-latest"
 
 
 def ask_gemini(user_message, history=None, user_memory=None):
@@ -12,7 +12,8 @@ def ask_gemini(user_message, history=None, user_memory=None):
         user_memory = {}
 
     conversation = "\n".join(
-        [str(item) for item in history[-20:]]
+    [str(item) for item in history[-8:]]
+)
     )
 
     memory_text = ""
@@ -63,7 +64,7 @@ Answer naturally and remember the context.
         url,
         headers=headers,
         json=data,
-        timeout=60
+        timeout=20
     )
 
     response.raise_for_status()
