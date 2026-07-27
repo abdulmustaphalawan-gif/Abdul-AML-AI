@@ -14,7 +14,6 @@ def ask_gemini(user_message, history=None, user_memory=None):
     conversation = "\n".join(
     [str(item) for item in history[-8:]]
 )
-    )
 
     memory_text = ""
 
