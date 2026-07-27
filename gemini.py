@@ -1,7 +1,7 @@
 import requests
 from config import GEMINI_API_KEY, SYSTEM_PROMPT
 
-MODEL = "gemini-3.5-flash-latest"
+MODEL = "gemini-2.5-flash"
 
 
 def ask_gemini(user_message, history=None, user_memory=None):
