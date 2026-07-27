@@ -1,7 +1,7 @@
 import requests
 from config import GEMINI_API_KEY, SYSTEM_PROMPT
 
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.5-flash-latest"
 
 
 def ask_gemini(user_message, history=None, user_memory=None):
@@ -41,11 +41,12 @@ Current user message:
 Answer naturally and remember the context.
 """
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 
     headers = {
-        "Content-Type": "application/json"
-    }
+    "Content-Type": "application/json",
+    "x-goog-api-key": GEMINI_API_KEY,
+}
 
     data = {
         "contents": [
